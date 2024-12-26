@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fmcore
+  labels:
+    app: fmcore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fmcore
+  template:
+    metadata:
+      labels:
+        app: fmcore
+    spec:
+      containers:
+        - name: fmcore
+          image: buithethuat03/fmcore:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: SPRING_APPLICATION_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: fmcore-configmap
+                  key: spring.application.name
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: fmcore-configmap
+                  key: spring.datasource.url
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: fmcore-configmap
+                  key: spring.datasource.username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: fmcore-configmap
+                  key: spring.datasource.password
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              valueFrom:
+                configMapKeyRef:
+                  name: fmcore-configmap
+                  key: spring.jpa.hibernate.ddl-auto
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: fmcore-configmap
+                  key: spring.kafka.bootstrap-servers
+            - name: SPRING_KAFKA_CONSUMER_GROUP_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: fmcore-configmap
+                  key: spring.kafka.consumer.group-id
+            - name: SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET
+              valueFrom:
+                configMapKeyRef:
+                  name: fmcore-configmap
+                  key: spring.kafka.consumer.auto-offset-reset
+            - name: SPRING_KAFKA_PRODUCER_KEY_SERIALIZER
+              valueFrom:
+                configMapKeyRef:
+                  name: fmcore-configmap
+                  key: spring.kafka.producer.key-serializer
+            - name: SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER
+              valueFrom:
+                configMapKeyRef:
+                  name: fmcore-configmap
+                  key: spring.kafka.producer.value-serializer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fmcore-service
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 35.247.187.27
+  ports:
+    - port: 5000
+      targetPort: 5000
+  selector:
+    app: fmcore

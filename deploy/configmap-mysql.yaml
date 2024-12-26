@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  namespace: thuat
+data:
+  my.cnf: |
+    [mysqld]
+    skip-host-cache
+    skip-name-resolve
+    innodb-buffer-pool-size=64M
+    innodb-log-file-size=48M
+    innodb-force-recovery=6

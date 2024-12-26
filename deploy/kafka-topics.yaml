@@ -1,0 +1,29 @@
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaTopic
+metadata:
+  name: chi-ho-request-vcb
+  labels:
+    strimzi.io/cluster: my-cluster
+spec:
+  replicas: 1
+  partitions: 1
+---
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaTopic
+metadata:
+  name: chi-ho-request-vpbank
+  labels:
+    strimzi.io/cluster: my-cluster
+spec:
+  replicas: 1
+  partitions: 1
+---
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaTopic
+metadata:
+  name: chi-ho-response
+  labels:
+    strimzi.io/cluster: my-cluster
+spec:
+  replicas: 1
+  partitions: 1

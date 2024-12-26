@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: laravel
+  labels:
+    app: laravel
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: laravel
+  template:
+    metadata:
+      labels:
+        app: laravel
+        tier: web
+    spec:
+      containers:
+        - name: laravel
+          image: buithethuat03/laravel-app:latest
+          ports:
+            - containerPort: 8082
+          env:
+            - name: DB_CONNECTION
+              valueFrom:
+                configMapKeyRef:
+                  name: laravel-config
+                  key: DB_CONNECTION
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: laravel-config
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: laravel-config
+                  key: DB_PORT
+            - name: DB_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: laravel-config
+                  key: DB_DATABASE
+            - name: DB_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: laravel-config
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: laravel-config
+                  key: DB_PASSWORD  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: laravel-service
+  labels:
+    app: laravel
+spec:
+  selector:
+    app: laravel
+    tier: web
+  ports:
+  - port: 8080
+    targetPort: 8082
+  type: ClusterIP
+  # type: LoadBalancer
+  # loadBalancerIP: 35.247.187.27

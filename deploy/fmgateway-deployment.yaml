@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fmgateway
+  labels:
+    app: fmgateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fmgateway
+  template:
+    metadata:
+      labels:
+        app: fmgateway
+    spec:
+      containers:
+        - name: fmgateway
+          image: buithethuat03/fmgatewayvcb:latest
+          ports:
+            - containerPort: 5001
+          env:
+            - name: SPRING_APPLICATION_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: fmgateway-configmap
+                  key: spring.application.name
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: fmgateway-configmap
+                  key: spring.kafka.bootstrap-servers
+            - name: SPRING_KAFKA_CONSUMER_GROUP_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: fmgateway-configmap
+                  key: spring.kafka.consumer.group-id
+            - name: SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET
+              valueFrom:
+                configMapKeyRef:
+                  name: fmgateway-configmap
+                  key: spring.kafka.consumer.auto-offset-reset
+            - name: SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER
+              valueFrom:
+                configMapKeyRef:
+                  name: fmgateway-configmap
+                  key: spring.kafka.consumer.key-deserializer
+            - name: SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER
+              valueFrom:
+                configMapKeyRef:
+                  name: fmgateway-configmap
+                  key: spring.kafka.consumer.value-deserializer
+            - name: SPRING_KAFKA_PRODUCER_KEY_SERIALIZER
+              valueFrom:
+                configMapKeyRef:
+                  name: fmgateway-configmap
+                  key: spring.kafka.producer.key-serializer
+            - name: SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER
+              valueFrom:
+                configMapKeyRef:
+                  name: fmgateway-configmap
+                  key: spring.kafka.producer.value-serializer
+            - name: API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: fmgateway-configmap
+                  key: api.url
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fmgateway-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5001
+      targetPort: 5001
+  selector:
+    app: fmgateway

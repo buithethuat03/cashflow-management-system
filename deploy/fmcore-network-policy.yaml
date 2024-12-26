@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-prometheus
+  namespace: thuat
+spec:
+  podSelector:
+    matchLabels:
+      app: fmcore
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: prometheus
+    ports:
+    - protocol: TCP
+      port: 5000
+  policyTypes:
+  - Ingress
